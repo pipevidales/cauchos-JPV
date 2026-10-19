@@ -33,3 +33,7 @@ html {
   text-transform: uppercase;
   letter-spacing: 0.01em;
 }
+
+@utility fade-edges {
+  mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 55%, transparent 100%);
+}
