@@ -8,6 +8,7 @@ const links = [
   { label: "Inicio", path: "/", hash: "" },
   { label: "Nosotros", path: "/", hash: "#nosotros" },
   { label: "Productos", path: "/productos", hash: "" },
+  { label: "Cotizar", path: "/cotizar", hash: "" },
   { label: "Mayoreo", path: "/", hash: "#mayoreo" },
   { label: "Contacto", path: "/", hash: "#contacto" },
 ]
