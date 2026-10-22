@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
+import Reveal from "../componentes/Reveal"
 import SectionHeading from "../componentes/SectionHeading"
+import TreadBackground from "../componentes/TreadBackground"
 import { business, whatsappLink } from "../data/business"
 
 // Ícono de cada red, buscado por nombre
@@ -24,40 +26,37 @@ function Contacto() {
   ]
 
   return (
-    <section id="contacto" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionHeading eyebrow="Contacto" title="Contáctanos" />
+    <section id="contacto" className="relative isolate overflow-hidden border-t border-line bg-surface/40 py-24">
+      <TreadBackground />
 
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-        {canales.map(({ name, handle, url }) => (
-          <li key={name}>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 transition duration-200 hover:-translate-y-1 hover:border-brand/60"
-            >
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand text-white">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  {icons[name]}
-                </svg>
-              </span>
-              <span>
-                <span className="block text-sm text-muted">{name}</span>
-                <span className="block text-lg font-semibold">{handle}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className="mx-auto max-w-5xl px-6">
+        <Reveal>
+          <SectionHeading eyebrow="Contacto" title="Contáctanos" />
+        </Reveal>
+
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          {canales.map(({ name, handle, url }, i) => (
+            <Reveal as="li" key={name} delay={i * 100}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 transition duration-200 hover:-translate-y-1 hover:border-brand/60"
+              >
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand text-white">
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {icons[name]}
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm text-muted">{name}</span>
+                  <span className="block text-lg font-semibold">{handle}</span>
+                </span>
+              </a>
+            </Reveal>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

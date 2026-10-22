@@ -1,13 +1,13 @@
-import ref01 from "../imagenes/productos/ref-01.jpg"
-import ref02 from "../imagenes/productos/ref-02.jpg"
-import ref03 from "../imagenes/productos/ref-03.jpg"
-import ref04 from "../imagenes/productos/ref-04.jpg"
-import ref05 from "../imagenes/productos/ref-05.jpg"
-import ref06 from "../imagenes/productos/ref-06.jpg"
-import ref07 from "../imagenes/productos/ref-07.jpg"
-import ref08 from "../imagenes/productos/ref-08.jpg"
-import ref09 from "../imagenes/productos/ref-09.jpg"
-import ref10 from "../imagenes/productos/ref-10.jpg"
+import ref01 from "../imagenes/productos/ref-01.webp"
+import ref02 from "../imagenes/productos/ref-02.webp"
+import ref03 from "../imagenes/productos/ref-03.webp"
+import ref04 from "../imagenes/productos/ref-04.webp"
+import ref05 from "../imagenes/productos/ref-05.webp"
+import ref06 from "../imagenes/productos/ref-06.webp"
+import ref07 from "../imagenes/productos/ref-07.webp"
+import ref08 from "../imagenes/productos/ref-08.webp"
+import ref09 from "../imagenes/productos/ref-09.webp"
+import ref10 from "../imagenes/productos/ref-10.webp"
 
 // Forma que debe tener cada producto del catálogo
 export type Product = {

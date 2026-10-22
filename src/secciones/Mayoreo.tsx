@@ -1,4 +1,6 @@
 import { Link } from "react-router"
+import Reveal from "../componentes/Reveal"
+import Stripes from "../componentes/Stripes"
 import { business } from "../data/business"
 
 function Mayoreo() {
@@ -10,34 +12,36 @@ function Mayoreo() {
   ]
 
   return (
-    <section id="mayoreo" className="px-6 py-10">
-      <div
-        className="mx-auto max-w-5xl rounded-2xl border border-brand/40 p-8 text-center md:p-14"
-        style={{ background: "linear-gradient(135deg, rgba(225,29,46,.2), rgba(20,20,22,.9))" }}
-      >
-        <h2 className="heading-display text-4xl leading-none md:text-6xl">
-          Envíos a toda la República Mexicana
-        </h2>
-        <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
-          Precios de mayoreo en cualquier modelo a partir de{" "}
-          <b className="text-white">{business.wholesaleFrom} piezas</b>.
-        </p>
+    <section id="mayoreo" className="relative isolate overflow-hidden px-6 py-14">
+      <Stripes className="-left-20 bottom-0" />
 
-        <ul className="mt-6 flex flex-wrap justify-center gap-2">
-          {reglas.map((regla) => (
-            <li key={regla} className="rounded-full border border-line bg-bg/60 px-4 py-1.5 text-sm font-semibold">
-              {regla}
-            </li>
-          ))}
-        </ul>
-
-        <Link
-          to="/cotizar"
-          className="mt-8 inline-block rounded-lg bg-white px-7 py-3.5 font-semibold text-black transition duration-200 hover:scale-105 active:scale-95"
+      <Reveal className="mx-auto max-w-5xl">
+        <div
+          className="rounded-2xl border border-brand/40 p-8 text-center md:p-14"
+          style={{ background: "linear-gradient(135deg, rgba(225,29,46,.2), rgba(20,20,22,.9))" }}
         >
-          Cotizar mi pedido
-        </Link>
-      </div>
+          <h2 className="heading-display text-4xl leading-none md:text-6xl">Envíos a toda la República Mexicana</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
+            Precios de mayoreo en cualquier modelo a partir de{" "}
+            <b className="text-white">{business.wholesaleFrom} piezas</b>.
+          </p>
+
+          <ul className="mt-6 flex flex-wrap justify-center gap-2">
+            {reglas.map((regla) => (
+              <li key={regla} className="rounded-full border border-line bg-bg/60 px-4 py-1.5 text-sm font-semibold">
+                {regla}
+              </li>
+            ))}
+          </ul>
+
+          <Link
+            to="/cotizar"
+            className="mt-8 inline-block rounded-lg bg-white px-7 py-3.5 font-semibold text-black transition duration-200 hover:scale-105 active:scale-95"
+          >
+            Cotizar mi pedido
+          </Link>
+        </div>
+      </Reveal>
     </section>
   )
 }

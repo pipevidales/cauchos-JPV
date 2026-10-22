@@ -54,7 +54,7 @@ function Cotizar() {
                   qty > 0 ? "border-brand/60" : "border-line"
                 }`}
               >
-                <img src={p.image} alt={`Goma de impacto REF-${p.ref}`} className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                <img src={p.image} alt={`Goma de impacto REF-${p.ref}`} className="goma-plate h-16 w-16 shrink-0 rounded-lg object-contain" />
 
                 <div className="min-w-0 flex-1 basis-40">
                   <p className="heading-display text-lg text-brand">REF - {p.ref}</p>

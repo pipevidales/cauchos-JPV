@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
-import logo from "../imagenes/logo.jpg"
+import logo from "../imagenes/logo.png"
 import { business, whatsappLink } from "../data/business"
 
 // "hash" es la sección dentro de la página de inicio (vacío = parte superior)
@@ -15,33 +15,51 @@ const links = [
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 24)
   const { pathname, hash } = useLocation()
+
+  // Detecta si la página ya bajó un poco para compactar el navbar
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   const closeMenu = () => setIsMenuOpen(false)
   const isActive = (path: string, anchor: string) => pathname === path && hash === anchor
+  const solid = scrolled || isMenuOpen
 
   const desktopLink = (active: boolean) =>
-    `relative text-sm font-medium transition-colors duration-200
+    `relative font-medium transition-all duration-300
      after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:rounded-full after:bg-brand after:transition-transform after:duration-200
+     ${scrolled ? "text-sm" : "text-base"}
      ${active ? "text-white after:scale-x-100" : "text-muted after:scale-x-0 hover:text-white hover:after:scale-x-100"}`
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2">
-
+    // "fixed": al achicarse no mueve el contenido de la página
+    <header
+      className={`fixed inset-x-0 top-0 z-40 border-b transition-all duration-300 ${
+        solid ? "border-line bg-bg/85 backdrop-blur-md" : "border-transparent bg-transparent"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-6xl items-center justify-between px-6 transition-all duration-300 ${
+          scrolled ? "py-1.5" : "py-3 md:py-4"
+        }`}
+      >
         {/* Logo: lleva al inicio */}
         <Link to="/" onClick={closeMenu} aria-label={`${business.name} - Ir al inicio`}>
-          <img src={logo} alt={business.name} className="h-12 w-auto rounded-md" />
+          <img
+            src={logo}
+            alt={business.name}
+            className={`w-auto transition-all duration-300 ${scrolled ? "h-9 md:h-10" : "h-12 md:h-16"}`}
+          />
         </Link>
 
         {/* Links de escritorio */}
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
           {links.map(({ label, path, hash: anchor }) => (
-            <Link
-              key={label}
-              to={{ pathname: path, hash: anchor }}
-              className={desktopLink(isActive(path, anchor))}
-            >
+            <Link key={label} to={{ pathname: path, hash: anchor }} className={desktopLink(isActive(path, anchor))}>
               {label}
             </Link>
           ))}
@@ -61,20 +79,12 @@ function Navbar() {
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="-mr-1.5 cursor-pointer rounded-lg p-1.5 text-zinc-300 transition hover:bg-surface hover:text-white md:hidden"
+            className="-mr-1.5 cursor-pointer rounded-lg p-1.5 text-zinc-300 transition hover:bg-surface hover:text-white lg:hidden"
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
           >
-            <svg
-              aria-hidden="true"
-              className="h-6 w-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
+            <svg aria-hidden="true" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {isMenuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
             </svg>
           </button>
@@ -83,7 +93,7 @@ function Navbar() {
 
       {/* Menú móvil */}
       {isMenuOpen && (
-        <nav id="mobile-menu" aria-label="Móvil" className="border-t border-line bg-bg/95 px-6 py-3 md:hidden">
+        <nav id="mobile-menu" aria-label="Móvil" className="border-t border-line bg-bg/95 px-6 py-3 lg:hidden">
           <div className="flex flex-col">
             {links.map(({ label, path, hash: anchor }) => (
               <Link

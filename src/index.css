@@ -24,7 +24,7 @@ html {
   }
 }
 
-/* Estilo de títulos tipo logo: inclinado, condensado y en mayúsculas.
+/* Títulos tipo logo: inclinados, condensados y en mayúsculas.
    Uso: className="heading-display text-5xl" */
 @utility heading-display {
   font-family: var(--font-display);
@@ -34,6 +34,17 @@ html {
   letter-spacing: 0.01em;
 }
 
+/* Difumina los bordes de una imagen para que se funda con el fondo oscuro */
 @utility fade-edges {
   mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 55%, transparent 100%);
+}
+
+/* Luz suave detrás de las gomas (que son negras) para que se vean sobre fondo oscuro */
+@utility goma-plate {
+  background-image: radial-gradient(circle at center, rgba(98, 98, 108, 0.85) 0%, rgba(20, 20, 22, 0) 72%);
+}
+
+/* Huella de llanta de tractor: patrón en zigzag muy sutil, para fondos de sección */
+@utility bg-tread {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='60' viewBox='0 0 90 60'%3E%3Cpath d='M0 22 L45 2 L90 22 M0 52 L45 32 L90 52' fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='9'/%3E%3C/svg%3E");
 }
