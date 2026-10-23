@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import banner from "../imagenes/logo.png"
+import logo from "../imagenes/logo.png"
 import Reveal from "../componentes/Reveal"
 import SectionBand from "../componentes/SectionBand"
 import TreadBackground from "../componentes/TreadBackground"
@@ -52,7 +52,7 @@ const ventajas: { title: string; text: string; icon: ReactNode }[] = [
 function Nosotros() {
   return (
     <section id="nosotros" className="relative isolate overflow-hidden border-b border-line bg-surface/40 pb-12">
-      <TreadBackground />
+      <TreadBackground variant="grain"/>
 
       {/* Barra roja a todo el ancho con el nombre de la sección */}
       <SectionBand>Nosotros</SectionBand>
@@ -60,13 +60,15 @@ function Nosotros() {
       <div className="mx-auto max-w-6xl px-6 pt-10">
         {/* Imagen (más pequeña) y texto, con la misma altura */}
         <div className="grid items-stretch gap-8 lg:grid-cols-[5fr_7fr] lg:gap-12">
+          {/* El logo, sobre un resplandor rojo y con el marco desplazado */}
           <Reveal from="left" className="relative h-60 sm:h-72 lg:h-auto lg:min-h-64">
-            <div aria-hidden="true" className="absolute -bottom-2 -left-2 h-full w-full rounded-2xl border-2 border-brand/50" />
-            <img
-              src={banner}
-              alt="Gomas de impacto junto a una moto"
-              className="absolute inset-0 h-full w-full rounded-2xl border border-line object-cover object-center"
-            />
+            <div className="absolute inset-0 overflow-hidden rounded-2xl border border-line bg-bg/80">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 "
+              />
+              <img src={logo} alt="Logo de Cauchos JPV" className="relative h-full w-full object-contain p-6" />
+            </div>
           </Reveal>
 
           <div className="flex flex-col justify-center">
