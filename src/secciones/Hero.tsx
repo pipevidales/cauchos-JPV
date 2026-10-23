@@ -1,78 +1,69 @@
 import { Link } from "react-router"
-import logo from "../imagenes/logo.png"
-import { business } from "../data/business"
+import banner from "../imagenes/hero-banner.jpg"
 import Reveal from "../componentes/Reveal"
-import Stripes from "../componentes/Stripes"
-import TreadBackground from "../componentes/TreadBackground"
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden px-6 pb-24 pt-10 text-center md:pt-14">
-      {/* Fondo: huellas de llanta + resplandor rojo + logo como marca de agua + franjas */}
-      <TreadBackground />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{ background: "radial-gradient(ellipse at 50% 22%, rgba(225,29,46,.22), transparent 60%)" }}
-      />
+    // Pantalla completa, con el contenido alineado a la izquierda sobre una imagen de fondo
+    <section className="relative isolate flex min-h-svh items-center overflow-hidden px-6 pb-16 pt-32">
+      {/* Imagen de fondo y degradados: oscurecen la izquierda para que el texto se lea bien */}
       <img
-        src={logo}
+        src={banner}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 w-176 max-w-none -translate-x-1/2 -translate-y-1/2 opacity-[0.05]"
+        className="absolute inset-0 -z-20 h-full w-full object-cover object-[72%_center]"
       />
-      <Stripes className="-bottom-4 -left-16" />
-      <Stripes className="-right-16 top-8" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-r from-bg via-bg/80 to-bg/10" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-t from-bg via-transparent to-bg/50" />
 
-      <Reveal>
-        <img src={logo} alt={business.name} className="mx-auto w-64 md:w-96" />
-      </Reveal>
+      <div className="mx-auto w-full max-w-6xl">
+        <Reveal>
+          <p className="inline-flex items-center gap-2 rounded-full border border-brand/50 bg-brand/10 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide">
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-brand" />
+            100% hechos de llanta de tractor
+          </p>
+        </Reveal>
 
-      <Reveal delay={100}>
-        <p className="heading-display mt-2 text-xl md:text-2xl">
-          <span className="text-brand">100%</span> hechos de llanta de tractor
-        </p>
-      </Reveal>
+        <Reveal delay={100}>
+          <h1 className="heading-display mt-6 max-w-4xl text-balance text-6xl leading-[0.92] sm:text-7xl md:text-8xl">
+            Gomas de impacto para tu motocicleta
+          </h1>
+        </Reveal>
 
-      <Reveal delay={200}>
-        <h1 className="heading-display mx-auto mt-6 max-w-3xl text-balance text-5xl leading-none md:text-7xl">
-          Gomas de impacto para tu motocicleta
-        </h1>
-      </Reveal>
+        <Reveal delay={200}>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-zinc-200">
+            Repuestos y accesorios que convierten la fuerza de la llanta de tractor en resistencia que se nota.
+          </p>
+        </Reveal>
 
-      <Reveal delay={300}>
-        <p className="mx-auto mt-5 max-w-xl text-lg text-muted">
-          Repuestos y accesorios que convierten la fuerza de la llanta de tractor en resistencia que se nota.
-        </p>
-      </Reveal>
+        {/* Botones a la izquierda y enlace a la derecha, como en la referencia */}
+        <Reveal delay={300} className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/cotizar"
+              className="rounded-full bg-white px-7 py-3.5 font-semibold text-black transition duration-200 hover:scale-105 active:scale-95"
+            >
+              Cotizar mi pedido
+            </Link>
+            <Link
+              to="/productos"
+              className="rounded-full border-2 border-white/80 px-7 py-3 font-semibold text-white transition duration-200 hover:bg-white hover:text-black active:scale-95"
+            >
+              Ver catálogo
+            </Link>
+          </div>
 
-      <Reveal delay={400} className="mt-8 flex flex-wrap justify-center gap-4">
-        <Link
-          to="/productos"
-          className="rounded-lg bg-brand px-7 py-3.5 font-semibold text-white shadow-lg shadow-red-900/30 transition duration-200 hover:scale-105 active:scale-95"
-        >
-          Ver catálogo
-        </Link>
-        <Link
-          to="/cotizar"
-          className="rounded-lg border border-line px-7 py-3.5 font-semibold text-white transition duration-200 hover:scale-105 hover:border-brand active:scale-95"
-        >
-          Cotizar mi pedido
-        </Link>
-      </Reveal>
-
-      {/* Invitación a seguir bajando */}
-      <Reveal delay={600} className="mt-14">
-        <Link
-          to={{ pathname: "/", hash: "#nosotros" }}
-          aria-label="Conoce más sobre nosotros"
-          className="mx-auto grid h-11 w-11 place-items-center rounded-full border border-line text-muted transition hover:border-brand hover:text-white"
-        >
-          <svg viewBox="0 0 24 24" className="h-5 w-5 animate-bounce motion-reduce:animate-none" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </Link>
-      </Reveal>
+          <Link
+            to={{ pathname: "/", hash: "#nosotros" }}
+            className="inline-flex items-center gap-2 font-semibold text-white/90 transition hover:text-white"
+          >
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+              <path d="M7 4l13 8-13 8z" />
+            </svg>
+            Mas sobre nosotros
+          </Link>
+        </Reveal>
+      </div>
     </section>
   )
 }

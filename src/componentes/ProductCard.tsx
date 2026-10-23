@@ -1,4 +1,5 @@
 import { Link } from "react-router"
+import GomaImage from "./GomaImage"
 import type { Product } from "../data/products"
 import { business } from "../data/business"
 import { formatMXN } from "../utils/cotizacion"
@@ -13,11 +14,11 @@ function ProductCard({ product, interactive }: ProductCardProps) {
 
   return (
     <article className="flex h-full flex-col rounded-2xl border border-line bg-surface p-4 shadow-xl shadow-black/40">
-      <img
+      <GomaImage
         src={product.image}
         alt={`Goma de impacto REF-${product.ref}`}
-        draggable={false}
-        className="goma-plate aspect-square w-full rounded-xl object-contain p-2"
+        className="aspect-square w-full"
+        orb="-inset-6"
       />
 
       <p className="heading-display mt-4 text-2xl text-brand">REF - {product.ref}</p>

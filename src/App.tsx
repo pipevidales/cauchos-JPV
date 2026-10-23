@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router"
+import { Navigate, Route, Routes, useLocation } from "react-router"
 import Navbar from "./componentes/Navbar"
 import Footer from "./componentes/Footer"
 import ScrollManager from "./componentes/ScrollManager"
@@ -8,13 +8,17 @@ import Productos from "./paginas/Productos"
 import Cotizar from "./paginas/Cotizar"
 
 function App() {
+  const { pathname } = useLocation()
+  const isHome = pathname === "/"
+
   return (
     <>
       <ScrollManager />
       <Navbar />
 
-      {/* El navbar es "fixed", así que se deja un espacio arriba igual a su altura */}
-      <div className="pt-18 md:pt-24">
+      {/* El navbar es "fixed": en las páginas interiores se deja un espacio arriba igual a su altura.
+          En el inicio no, porque el Hero se extiende por detrás del navbar transparente. */}
+      <div className={isHome ? "" : "pt-18 md:pt-24"}>
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/productos" element={<Productos />} />

@@ -70,7 +70,7 @@ function Navbar() {
             href={whatsappLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white transition duration-200 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             WhatsApp
           </a>

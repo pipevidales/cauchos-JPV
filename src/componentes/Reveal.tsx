@@ -9,9 +9,9 @@ type RevealProps = {
 }
 
 const hiddenState = {
-  up: "translate-y-8",
-  left: "-translate-x-10",
-  right: "translate-x-10",
+  up: "translate-y-3",
+  left: "-translate-x-4",
+  right: "translate-x-4",
   none: "",
 }
 
@@ -45,7 +45,7 @@ function Reveal({ children, as: Tag = "div", from = "up", delay = 0, className =
     <Tag
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-[opacity,translate] duration-700 ease-out motion-reduce:transition-none ${
+      className={`transition-[opacity,translate] duration-1000 ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
         visible ? "translate-x-0 translate-y-0 opacity-100" : `opacity-0 ${hiddenState[from]}`
       } ${className}`}
     >

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useSearchParams } from "react-router"
+import GomaImage from "../componentes/GomaImage"
 import SectionHeading from "../componentes/SectionHeading"
 import { business, whatsappLink } from "../data/business"
 import { products } from "../data/products"
@@ -54,7 +55,7 @@ function Cotizar() {
                   qty > 0 ? "border-brand/60" : "border-line"
                 }`}
               >
-                <img src={p.image} alt={`Goma de impacto REF-${p.ref}`} className="goma-plate h-16 w-16 shrink-0 rounded-lg object-contain" />
+                <GomaImage src={p.image} alt={`Goma de impacto REF-${p.ref}`} className="mx-2 h-20 w-20 shrink-0" orb="-inset-3" />
 
                 <div className="min-w-0 flex-1 basis-40">
                   <p className="heading-display text-lg text-brand">REF - {p.ref}</p>
