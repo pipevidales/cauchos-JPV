@@ -73,7 +73,7 @@ function ProductCarousel({ products }: { products: Product[] }) {
     >
       {/* Escenario: las tarjetas se apilan en el centro y se desplazan con transform */}
       <div
-        className="relative h-136 touch-pan-y select-none overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+        className="relative h-154 touch-pan-y select-none overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -92,7 +92,7 @@ function ProductCarousel({ products }: { products: Product[] }) {
               onClick={() => {
                 if (offset !== 0 && !dragged.current) goTo(i)
               }}
-              className={`absolute left-1/2 top-2 h-130 w-72 transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none ${
+              className={`absolute left-1/2 top-2 h-148 w-72 transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none ${
                 offset !== 0 ? "cursor-pointer" : ""
               } ${visible ? "" : "pointer-events-none"}`}
               style={{

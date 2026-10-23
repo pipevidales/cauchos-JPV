@@ -23,7 +23,7 @@ function ProductCard({ product, interactive }: ProductCardProps) {
 
       <p className="heading-display mt-4 text-2xl text-brand">REF - {product.ref}</p>
 
-      <ul className="mt-2 space-y-0.5 text-sm text-muted">
+      <ul className="mt-2 max-h-28 space-y-0.5 overflow-y-auto text-sm text-muted">
         {product.models.map((model) => (
           <li key={model}>{model}</li>
         ))}

@@ -38,26 +38,23 @@ function ComoComprar() {
 
       <ol className="mt-12 grid gap-6 md:grid-cols-3">
         {pasos.map((paso, i) => (
-          <Reveal
-            as="li"
-            key={paso.n}
-            delay={i * 150}
-            className="relative overflow-hidden rounded-2xl border border-line bg-surface p-7 transition-colors duration-200 hover:border-brand/60"
-          >
-            <span aria-hidden="true" className="heading-display absolute -right-2 -top-4 text-8xl text-brand/15">
-              {paso.n}
-            </span>
-            <h3 className="heading-display relative text-2xl">{paso.title}</h3>
-            <p className="relative mt-3 text-muted">{paso.text}</p>
-            {paso.to ? (
-              <Link to={paso.to} className={`relative ${linkClass}`}>
-                {paso.cta} →
-              </Link>
-            ) : (
-              <a href={paso.href} target="_blank" rel="noopener noreferrer" className={`relative ${linkClass}`}>
-                {paso.cta} →
-              </a>
-            )}
+          <Reveal as="li" key={paso.n} delay={i * 150}>
+            <div className="relative h-full overflow-hidden rounded-2xl border border-line bg-surface p-7 transition-colors duration-200 hover:border-brand/60">
+              <span aria-hidden="true" className="heading-display absolute -right-2 -top-4 text-8xl text-brand/15">
+                {paso.n}
+              </span>
+              <h3 className="heading-display relative text-2xl">{paso.title}</h3>
+              <p className="relative mt-3 text-muted">{paso.text}</p>
+              {paso.to ? (
+                <Link to={paso.to} className={`relative ${linkClass}`}>
+                  {paso.cta} →
+                </Link>
+              ) : (
+                <a href={paso.href} target="_blank" rel="noopener noreferrer" className={`relative ${linkClass}`}>
+                  {paso.cta} →
+                </a>
+              )}
+            </div>
           </Reveal>
         ))}
       </ol>

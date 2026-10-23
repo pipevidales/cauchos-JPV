@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react"
 
 type RevealProps = {
-  children: ReactNode
+  children?: ReactNode
   as?: ElementType // etiqueta HTML a usar: "div" por defecto, "li" dentro de listas, etc.
-  from?: "up" | "left" | "right" | "none" // desde dónde aparece
+  from?: "up" | "left" | "right" | "none" | "wipe" // desde dónde aparece ("wipe": se estira de izquierda a derecha)
   delay?: number // retraso en milisegundos (sirve para que los elementos entren uno tras otro)
   className?: string
 }
@@ -13,8 +13,11 @@ const hiddenState = {
   left: "-translate-x-4",
   right: "translate-x-4",
   none: "",
+  wipe: "origin-left scale-x-0",
 }
 
+// OJO: no pongas clases "transition-*" ni "duration-*" en el className de Reveal (pisan la animación).
+// Los efectos de hover van en un elemento interno.
 // Hace que su contenido aparezca (fundido + desplazamiento) la primera vez que entra en pantalla
 function Reveal({ children, as: Tag = "div", from = "up", delay = 0, className = "" }: RevealProps) {
   const ref = useRef<HTMLElement>(null)
@@ -45,8 +48,8 @@ function Reveal({ children, as: Tag = "div", from = "up", delay = 0, className =
     <Tag
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-[opacity,translate] duration-1000 ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
-        visible ? "translate-x-0 translate-y-0 opacity-100" : `opacity-0 ${hiddenState[from]}`
+      className={`transition-[opacity,translate,scale] duration-1000 ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
+        visible ? "translate-x-0 translate-y-0 scale-x-100 opacity-100" : `opacity-0 ${hiddenState[from]}`
       } ${className}`}
     >
       {children}
