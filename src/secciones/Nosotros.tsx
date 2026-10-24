@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import logo from "../imagenes/logo.png"
+import logo from "../imagenes/logo.jpg"
 import Reveal from "../componentes/Reveal"
 import SectionBand from "../componentes/SectionBand"
 import TreadBackground from "../componentes/TreadBackground"
@@ -62,12 +62,12 @@ function Nosotros() {
         <div className="grid items-stretch gap-8 lg:grid-cols-[5fr_7fr] lg:gap-12">
           {/* El logo, sobre un resplandor rojo y con el marco desplazado */}
           <Reveal from="left" className="relative h-60 sm:h-72 lg:h-auto lg:min-h-64">
-            <div className="absolute inset-0 overflow-hidden rounded-2xl border border-line bg-bg/80">
+            <div className="absolute  overflow-hidden rounded-2xl border border-line bg-bg/80">
               <div
                 aria-hidden="true"
                 className="absolute inset-0 "
               />
-              <img src={logo} alt="Logo de Cauchos JPV" className="relative h-full w-full object-contain p-6" />
+              <img src={logo} alt="Logo de Cauchos JPV" className="relative  h-full w-full object-contain p-6" />
             </div>
           </Reveal>
 
