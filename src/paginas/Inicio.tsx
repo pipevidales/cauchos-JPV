@@ -2,7 +2,6 @@ import Hero from "../secciones/Hero"
 import Nosotros from "../secciones/Nosotros"
 import ComoComprar from "../secciones/ComoComprar"
 import Mayoreo from "../secciones/Mayoreo"
-import Preguntas from "../secciones/Preguntas"
 import Contacto from "../secciones/Contacto"
 
 // Página de inicio: todas las secciones en un solo scroll
@@ -13,7 +12,6 @@ function Inicio() {
       <Nosotros />
       <ComoComprar />
       <Mayoreo />
-      <Preguntas />
       <Contacto />
     </main>
   )

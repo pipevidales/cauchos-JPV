@@ -60,7 +60,7 @@ function Hero() {
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
               <path d="M7 4l13 8-13 8z" />
             </svg>
-            Mas sobre nosotros
+            Más sobre nosotros
           </Link>
         </Reveal>
       </div>

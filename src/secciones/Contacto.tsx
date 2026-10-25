@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import Reveal from "../componentes/Reveal"
-import SectionHeading from "../componentes/SectionHeading"
+import SectionBand from "../componentes/SectionBand"
 import TreadBackground from "../componentes/TreadBackground"
 import { business, whatsappLink } from "../data/business"
 
@@ -26,16 +26,20 @@ function Contacto() {
   ]
 
   return (
-    <section id="contacto" className="relative isolate overflow-hidden border-t border-line bg-surface/40 py-24">
+    <section id="contacto" className="relative isolate overflow-hidden border-t border-line bg-surface/40 pb-16">
       <TreadBackground />
 
-      <div className="mx-auto max-w-5xl px-6">
+      {/* Barra roja a todo el ancho, igual que en las demás secciones */}
+      <SectionBand>Contacto</SectionBand>
+
+      <div className="mx-auto max-w-5xl px-6 pt-10">
         <Reveal>
-          <SectionHeading eyebrow="Contacto" title="Contáctanos" />
+          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Contáctanos</h3>
         </Reveal>
 
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {canales.map(({ name, handle, url }, i) => (
+            // Reveal solo anima la aparición; el estilo y el hover van en el enlace interno
             <Reveal as="li" key={name} delay={i * 100}>
               <a
                 href={url}

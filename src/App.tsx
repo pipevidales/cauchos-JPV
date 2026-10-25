@@ -30,7 +30,8 @@ function App() {
         <Footer />
       </div>
 
-      <WhatsAppFloat />
+      {/* En /cotizar no se muestra: ahí ya hay un botón de WhatsApp fijo con el pedido */}
+      {pathname !== "/cotizar" && <WhatsAppFloat />}
     </>
   )
 }

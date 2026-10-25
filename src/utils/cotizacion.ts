@@ -48,7 +48,7 @@ export function calcularCotizacion(quantities: Quantities) {
 export type Quote = ReturnType<typeof calcularCotizacion>
 
 // Texto que se envía por WhatsApp a la empresa
-export function construirMensaje(quote: Quote) {
+export function construirMensaje(quote: Quote, destino = "") {
   const detalle = quote.lines.map(
     ({ product, qty, unitPrice, amount }) =>
       `• REF-${product.ref} (${product.models[0]}) x ${qty} pzas · ${formatMXN(unitPrice)} c/u = ${formatMXN(amount)}`,
@@ -64,5 +64,25 @@ export function construirMensaje(quote: Quote) {
     `IVA (${Math.round(business.ivaRate * 100)}%): ${formatMXN(quote.iva)}`,
     `Total: ${formatMXN(quote.total)}`,
     `Envío: ${quote.freeShipping ? "gratis" : "por cotizar"}`,
+    ...(destino.trim() ? [`Destino: ${destino.trim()}`] : []),
   ].join("\n")
+}
+
+// Próxima meta del pedido (mínimo → mayoreo → envío gratis), para la barra de progreso
+export function siguienteMeta(totalPieces: number) {
+  const { minOrder, wholesaleFrom, freeShippingFrom, wholesaleDiscount } = business
+
+  if (totalPieces < minOrder) {
+    return { goal: minOrder, text: `Pedido mínimo: ${totalPieces} de ${minOrder} piezas` }
+  }
+  if (totalPieces < wholesaleFrom) {
+    return {
+      goal: wholesaleFrom,
+      text: `Faltan ${wholesaleFrom - totalPieces} piezas para mayoreo (${formatMXN(wholesaleDiscount)} menos por pieza)`,
+    }
+  }
+  if (totalPieces < freeShippingFrom) {
+    return { goal: freeShippingFrom, text: `Faltan ${freeShippingFrom - totalPieces} piezas para envío gratis` }
+  }
+  return { goal: freeShippingFrom, text: "¡Tienes precio de mayoreo y envío gratis!" }
 }
