@@ -4,11 +4,17 @@ import Stripes from "../componentes/Stripes"
 import { business } from "../data/business"
 
 function Mayoreo() {
+  const { minOrder, wholesaleTiers, freeShippingFrom, wholesaleFrom } = business
+
   // Los datos salen de business.ts: si cambian las reglas, se actualizan aquí solas
   const reglas = [
-    `Pedido mínimo: ${business.minOrder} piezas`,
-    `Desde ${business.wholesaleFrom} piezas: $${business.wholesaleDiscount} menos por pieza`,
-    `Envío gratis desde ${business.freeShippingFrom} piezas`,
+    `Pedido mínimo: ${minOrder} piezas`,
+    ...wholesaleTiers.map((tier, i) => {
+      const siguiente = wholesaleTiers[i + 1]
+      const rango = siguiente ? `De ${tier.from} a ${siguiente.from - 1} piezas` : `De ${tier.from} piezas en adelante`
+      return `${rango}: $${tier.discount} menos por pieza`
+    }),
+    `Envío gratis desde ${freeShippingFrom} piezas en adelante`,
   ]
 
   return (
@@ -22,8 +28,8 @@ function Mayoreo() {
         >
           <h2 className="heading-display text-4xl leading-none md:text-6xl">Envíos a toda la República Mexicana</h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
-            Precios de mayoreo en cualquier modelo a partir de{" "}
-            <b className="text-white">{business.wholesaleFrom} piezas</b>.
+            Precios de mayoreo en referencias seleccionadas, a partir de{" "}
+            <b className="text-white">{wholesaleFrom} piezas</b>.
           </p>
 
           <ul className="mt-6 flex flex-wrap justify-center gap-2">

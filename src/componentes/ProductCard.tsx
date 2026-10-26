@@ -10,38 +10,46 @@ type ProductCardProps = {
 }
 
 function ProductCard({ product, interactive }: ProductCardProps) {
-  const wholesalePrice = product.price - business.wholesaleDiscount
+  // Ej.: "$25 desde 100 · $20 desde 500" (solo en las referencias con mayoreo)
+  const mayoreo = business.wholesaleTiers
+    .map((tier) => `$${product.price - tier.discount} a partir de ${tier.from} unidades`)
+    .join(" · ")
 
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-line bg-surface p-4 shadow-xl shadow-black/40">
+    <article className="flex h-full flex-col rounded-2xl border border-line bg-surface p-3 shadow-xl shadow-black/40">
       <GomaImage
         src={product.image}
         alt={`Goma de impacto REF-${product.ref}`}
-        className="aspect-square w-full"
-        orb="-inset-6"
+        className="h-40 w-full"
+        orb="-inset-3"
       />
 
-      <p className="heading-display mt-4 text-2xl text-brand">REF - {product.ref}</p>
+      {/* Referencia y precio en la misma línea */}
+      <div className="mt-3 flex items-baseline justify-between gap-2">
+        <p className="heading-display text-xl text-brand">REF - {product.ref}</p>
+        <p className="heading-display text-2xl leading-none">
+          {formatMXN(product.price)}
+          <span className="ml-1 text-xs font-normal normal-case not-italic text-muted">
+            c/u {business.pricesIncludeIva ? "IVA incl." : "+ IVA"}
+          </span>
+        </p>
+      </div>
 
-      <ul className="mt-2 max-h-28 space-y-0.5 overflow-y-auto text-sm text-muted">
+      <ul className="mt-1 max-h-20 space-y-0.5 overflow-y-auto text-xs text-muted">
         {product.models.map((model) => (
           <li key={model}>{model}</li>
         ))}
       </ul>
 
-      <div className="mt-auto pt-4">
-        <p className="flex items-baseline gap-2">
-          <span className="heading-display text-3xl">{formatMXN(product.price)}</span>
-          <span className="text-sm text-muted">c/u {business.pricesIncludeIva ? "IVA incluido" : "+ IVA"}</span>
-        </p>
+      <div className="mt-auto pt-2">
         <p className="text-xs text-muted">
-          Desde {business.wholesaleFrom} piezas: {formatMXN(wholesalePrice)} c/u
+          {product.wholesale ? `Mayoreo: ${mayoreo}` : "Sin precio de mayoreo"}
         </p>
 
         <Link
           to={`/cotizar?ref=${product.ref}`}
           tabIndex={interactive ? 0 : -1}
-          className="mt-3 block rounded-lg bg-brand px-4 py-2.5 text-center font-semibold text-white transition duration-200 hover:scale-[1.02] active:scale-95"
+          className="mt-2 block rounded-lg bg-brand px-4 py-2 text-center text-sm font-semibold text-white transition duration-200 hover:scale-[1.02] active:scale-95"
         >
           Cotizar esta referencia
         </Link>

@@ -9,6 +9,7 @@ import {
   calcularCotizacion,
   construirMensaje,
   formatMXN,
+  precioUnitario,
   siguienteMeta,
   type Quantities,
 } from "../utils/cotizacion"
@@ -16,7 +17,7 @@ import {
 const STORAGE_KEY = "cauchos-jpv-pedido"
 
 // Lee el pedido guardado en el navegador, aceptando solo referencias y cantidades válidas
-function loadSaved(): { quantities: Quantities; city: string } {
+function loadSaved(): { quantities: Quantities; postal: string } {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
@@ -26,15 +27,16 @@ function loadSaved(): { quantities: Quantities; city: string } {
         const n = Number(data?.quantities?.[p.ref])
         if (Number.isFinite(n) && n > 0) quantities[p.ref] = Math.min(99999, Math.floor(n))
       }
-      return { quantities, city: typeof data?.city === "string" ? data.city.slice(0, 60) : "" }
+      const postal = typeof data?.postal === "string" ? data.postal.replace(/\D/g, "").slice(0, 5) : ""
+      return { quantities, postal }
     }
   } catch {
     // si el navegador no permite guardar o el dato está dañado, se empieza con el pedido vacío
   }
-  return { quantities: {}, city: "" }
+  return { quantities: {}, postal: "" }
 }
 
-// Botón de enviar: activo solo cuando el pedido llega al mínimo
+// Botón de enviar: activo solo cuando el pedido llega al mínimo y hay código postal
 function SendButton({ enabled, href, label, compact = false }: { enabled: boolean; href: string; label: string; compact?: boolean }) {
   const size = compact ? "px-4 py-2.5 text-sm" : "w-full px-5 py-3.5"
 
@@ -69,22 +71,28 @@ function Cotizar() {
     }
     return saved
   })
-  const [city, setCity] = useState(() => loadSaved().city)
+  const [postal, setPostal] = useState(() => loadSaved().postal)
 
   // Guarda el pedido para que no se pierda al recargar o volver más tarde
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ quantities, city }))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ quantities, postal }))
     } catch {
       // sin guardado: la cotización sigue funcionando normal
     }
-  }, [quantities, city])
+  }, [quantities, postal])
 
   const quote = calcularCotizacion(quantities)
   const meta = siguienteMeta(quote.totalPieces)
   const progress = Math.min(100, Math.round((quote.totalPieces / meta.goal) * 100))
-  const whatsapp = whatsappLink(construirMensaje(quote, city))
   const ivaPct = Math.round(business.ivaRate * 100)
+
+  // El código postal mexicano tiene 5 dígitos y es obligatorio para enviar la cotización
+  const postalOk = /^\d{5}$/.test(postal)
+  const postalInvalido = postal.length > 0 && !postalOk
+  const canSend = quote.canSend && postalOk
+  const faltaPostal = quote.canSend && !postalOk
+  const whatsapp = whatsappLink(construirMensaje(quote, postal))
 
   // Limpia lo que escribe el cliente: solo enteros entre 0 y 99,999
   const setQty = (ref: string, value: number) =>
@@ -94,6 +102,10 @@ function Cotizar() {
     quote.totalPieces === 0
       ? `Elige las piezas que necesitas. Pedido mínimo: ${business.minOrder} piezas.`
       : meta.text
+
+  const mayoreoTexto = business.wholesaleTiers
+    .map((t) => `${formatMXN(t.discount)} por pieza desde ${t.from} piezas`)
+    .join(" y ")
 
   return (
     <main>
@@ -105,29 +117,41 @@ function Cotizar() {
           <h3 className="heading-display text-3xl leading-none md:text-5xl">Arma tu pedido</h3>
         </Reveal>
         <p className="mt-4 max-w-2xl text-lg text-muted">
-          Elige las referencias y cantidades. Desde {business.wholesaleFrom} piezas (de cualquier referencia) cada
-          pieza baja {formatMXN(business.wholesaleDiscount)}. Al final envías la cotización por WhatsApp para cerrar
-          tu compra.
+          Elige las referencias y cantidades. Las referencias con mayoreo bajan {mayoreoTexto} (cuentan las piezas de
+          todo el pedido) y el envío es gratis desde {business.freeShippingFrom} piezas. Al final envías la cotización
+          por WhatsApp para cerrar tu compra.
         </p>
 
-        {/* Destino (opcional) y limpiar pedido */}
-        <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-          <label className="block w-full max-w-sm">
-            <span className="mb-1 block text-sm text-muted">¿A dónde enviamos? (opcional)</span>
+        {/* Código postal (obligatorio) y limpiar pedido */}
+        <div className="mt-8 flex flex-wrap items-start justify-between gap-4">
+          <label className="block w-full max-w-xs">
+            <span className="mb-1 block text-sm text-muted">
+              Código postal de envío <span className="text-brand">*</span>
+            </span>
             <input
               type="text"
-              value={city}
-              maxLength={60}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Ciudad y estado, ej. Torreón, Coahuila"
-              className="w-full rounded-lg border border-line bg-surface px-4 py-2.5 placeholder:text-muted focus:border-brand focus:outline-none"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              required
+              maxLength={5}
+              value={postal}
+              onChange={(e) => setPostal(e.target.value.replace(/\D/g, "").slice(0, 5))}
+              placeholder="Ej. 27000"
+              aria-invalid={postalInvalido}
+              className={`w-full rounded-lg border bg-surface px-4 py-2.5 placeholder:text-muted focus:outline-none ${
+                postalInvalido ? "border-red-500" : "border-line focus:border-brand"
+              }`}
             />
+            <span className={`mt-1 block text-xs ${postalInvalido ? "text-red-400" : "text-muted"}`}>
+              {postalInvalido ? "El código postal debe tener 5 dígitos." : "5 dígitos. Obligatorio para enviar la cotización."}
+            </span>
           </label>
+
           <button
             type="button"
             onClick={() => setQuantities({})}
             disabled={quote.totalPieces === 0}
-            className="cursor-pointer rounded-full border border-line px-5 py-2 text-sm font-semibold transition hover:border-brand disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line"
+            className="cursor-pointer self-end rounded-full border border-line px-5 py-2 text-sm font-semibold transition hover:border-brand disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line"
           >
             Limpiar pedido
           </button>
@@ -138,6 +162,8 @@ function Cotizar() {
           <ul className="space-y-3">
             {products.map((p) => {
               const qty = quantities[p.ref] || 0
+              const unit = precioUnitario(p, quote.discount)
+              const conDescuento = p.wholesale && quote.discount > 0
               return (
                 <li
                   key={p.ref}
@@ -158,10 +184,9 @@ function Cotizar() {
                       {p.models.join(" · ")}
                     </p>
                     <p className="text-sm">
-                      {quote.isWholesale && (
-                        <span className="mr-2 text-muted line-through">{formatMXN(p.price)}</span>
-                      )}
-                      <span className="font-semibold">{formatMXN(p.price - quote.discount)}</span> c/u
+                      {conDescuento && <span className="mr-2 text-muted line-through">{formatMXN(p.price)}</span>}
+                      <span className="font-semibold">{formatMXN(unit)}</span> c/u
+                      {!p.wholesale && <span className="ml-2 text-xs text-muted">Sin mayoreo</span>}
                     </p>
                   </div>
 
@@ -258,16 +283,21 @@ function Cotizar() {
                   {quote.freeShipping ? "Gratis" : "Se cotiza por WhatsApp"}
                 </dd>
               </div>
-              {city.trim() && (
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted">Destino</dt>
-                  <dd className="text-right font-semibold">{city.trim()}</dd>
+              {postalOk && (
+                <div className="flex justify-between">
+                  <dt className="text-muted">Código postal</dt>
+                  <dd className="font-semibold">{postal}</dd>
                 </div>
               )}
             </dl>
 
             <div className="mt-6">
-              <SendButton enabled={quote.canSend} href={whatsapp} label="Enviar cotización por WhatsApp" />
+              <SendButton enabled={canSend} href={whatsapp} label="Enviar cotización por WhatsApp" />
+              {faltaPostal && (
+                <p className="mt-2 text-center text-xs text-red-400">
+                  Escribe tu código postal (5 dígitos) para poder enviar la cotización.
+                </p>
+              )}
             </div>
           </aside>
         </div>
@@ -280,10 +310,14 @@ function Cotizar() {
         </div>
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div>
-            <p className="text-xs text-muted">{quote.totalPieces} piezas · total con IVA</p>
+            {faltaPostal ? (
+              <p className="text-xs text-red-400">Falta tu código postal</p>
+            ) : (
+              <p className="text-xs text-muted">{quote.totalPieces} piezas · total con IVA</p>
+            )}
             <p className="heading-display text-2xl leading-none">{formatMXN(quote.total)}</p>
           </div>
-          <SendButton compact enabled={quote.canSend} href={whatsapp} label="Enviar por WhatsApp" />
+          <SendButton compact enabled={canSend} href={whatsapp} label="Enviar por WhatsApp" />
         </div>
       </div>
     </main>

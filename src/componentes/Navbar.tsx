@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
-import logo from "../imagenes/logo.png"
+import logo from "../imagenes/logo.jpg"
 import { business, whatsappLink } from "../data/business"
 
 // "hash" es la sección dentro de la página de inicio (vacío = parte superior)
 const links = [
   { label: "Inicio", path: "/", hash: "" },
   { label: "Nosotros", path: "/", hash: "#nosotros" },
+  { label: "Como comprar - Mayoreo", path: "/", hash: "#como-comprar" },
   { label: "Productos", path: "/productos", hash: "" },
   { label: "Cotizar", path: "/cotizar", hash: "" },
-  { label: "Mayoreo", path: "/", hash: "#mayoreo" },
+  
   { label: "Contacto", path: "/", hash: "#contacto" },
 ]
 

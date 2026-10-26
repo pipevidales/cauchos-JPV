@@ -20,26 +20,27 @@ function Productos() {
       {/* Barra roja a todo el ancho, igual que en las secciones del inicio */}
       <SectionBand>Catálogo</SectionBand>
 
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-10">
-        <Reveal>
-          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Gomas de impacto</h3>
-        </Reveal>
-        <p className="mx-auto mt-4 max-w-xl text-center text-lg text-muted">
-          Desliza para ver las referencias y encuentra la que le queda a tu moto.
-        </p>
+      <div className="mx-auto max-w-6xl px-6 pb-12 pt-8">
+        {/* Título a la izquierda y buscador a la derecha: ahorra espacio vertical */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <Reveal>
+            <h3 className="heading-display text-3xl leading-none md:text-5xl">Gomas de impacto</h3>
+            <p className="mt-2 text-muted">Desliza para ver las referencias y encuentra la que le queda a tu moto.</p>
+          </Reveal>
 
-        <label className="mx-auto mt-8 block max-w-md">
-          <span className="sr-only">Buscar modelo de moto</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Busca tu modelo: Pulsar, Italika, CB 160…"
-            className="w-full rounded-lg border border-line bg-surface px-4 py-3 placeholder:text-muted focus:border-brand focus:outline-none"
-          />
-        </label>
+          <label className="block w-full lg:max-w-sm">
+            <span className="sr-only">Buscar modelo de moto</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Busca tu modelo: Pulsar, Italika, CB 160…"
+              className="w-full rounded-lg border border-line bg-surface px-4 py-3 placeholder:text-muted focus:border-brand focus:outline-none"
+            />
+          </label>
+        </div>
 
-        <div className="mt-6">
+        <div className="mt-4">
           {/* "key" reinicia el carrusel cada vez que cambia la búsqueda */}
           <ProductCarousel key={q} products={filtered} />
 
@@ -59,13 +60,13 @@ function Productos() {
           )}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
           <p className="text-sm text-muted">
-            Pedido mínimo de {business.minOrder} piezas · mayoreo desde {business.wholesaleFrom}
+            Pedido mínimo de {business.minOrder} piezas · mayoreo en referencias seleccionadas desde {business.wholesaleFrom}
           </p>
           <Link
             to="/cotizar"
-            className="mt-4 inline-block rounded-lg border border-line px-7 py-3.5 font-semibold transition duration-200 hover:scale-105 hover:border-brand active:scale-95"
+            className="rounded-lg border border-line px-6 py-2.5 font-semibold transition duration-200 hover:scale-105 hover:border-brand active:scale-95"
           >
             Armar mi cotización
           </Link>

@@ -1,5 +1,5 @@
 import { business } from "../data/business"
-import { products } from "../data/products"
+import { products, type Product } from "../data/products"
 
 // Cantidades que escribe el cliente: { "01": 50, "03": 60 }
 export type Quantities = Record<string, number>
@@ -10,17 +10,30 @@ export function formatMXN(value: number) {
   return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(value)
 }
 
+// Descuento por pieza según el total de piezas del pedido (suma de todas las referencias)
+export function descuentoPorPieza(totalPieces: number) {
+  let discount = 0
+  for (const tier of business.wholesaleTiers) {
+    if (totalPieces >= tier.from) discount = tier.discount
+  }
+  return discount
+}
+
+// Precio por pieza de una referencia: el descuento solo aplica en las que tienen mayoreo
+export function precioUnitario(product: Product, discount: number) {
+  return product.wholesale ? product.price - discount : product.price
+}
+
 // Toda la lógica de precios vive aquí, separada de la pantalla
 export function calcularCotizacion(quantities: Quantities) {
   const totalPieces = products.reduce((sum, p) => sum + (quantities[p.ref] || 0), 0)
-  const isWholesale = totalPieces >= business.wholesaleFrom
-  const discount = isWholesale ? business.wholesaleDiscount : 0
+  const discount = descuentoPorPieza(totalPieces)
 
   const lines = products
     .filter((p) => (quantities[p.ref] || 0) > 0)
     .map((product) => {
       const qty = quantities[product.ref]
-      const unitPrice = product.price - discount
+      const unitPrice = precioUnitario(product, discount)
       return { product, qty, unitPrice, amount: unitPrice * qty }
     })
 
@@ -33,22 +46,21 @@ export function calcularCotizacion(quantities: Quantities) {
   return {
     lines,
     totalPieces,
-    isWholesale,
     discount,
+    wholesaleApplied: discount > 0 && lines.some((l) => l.product.wholesale),
     subtotal,
     iva,
     total,
     freeShipping: totalPieces >= business.freeShippingFrom,
     canSend: totalPieces >= business.minOrder,
     missingForMin: Math.max(0, business.minOrder - totalPieces),
-    missingForWholesale: Math.max(0, business.wholesaleFrom - totalPieces),
   }
 }
 
 export type Quote = ReturnType<typeof calcularCotizacion>
 
 // Texto que se envía por WhatsApp a la empresa
-export function construirMensaje(quote: Quote, destino = "") {
+export function construirMensaje(quote: Quote, codigoPostal = "") {
   const detalle = quote.lines.map(
     ({ product, qty, unitPrice, amount }) =>
       `• REF-${product.ref} (${product.models[0]}) x ${qty} pzas · ${formatMXN(unitPrice)} c/u = ${formatMXN(amount)}`,
@@ -59,30 +71,37 @@ export function construirMensaje(quote: Quote, destino = "") {
     "",
     ...detalle,
     "",
-    `Piezas: ${quote.totalPieces}${quote.isWholesale ? " (precio de mayoreo)" : ""}`,
+    `Piezas: ${quote.totalPieces}${quote.wholesaleApplied ? " (precio de mayoreo aplicado)" : ""}`,
     `Subtotal: ${formatMXN(quote.subtotal)}`,
     `IVA (${Math.round(business.ivaRate * 100)}%): ${formatMXN(quote.iva)}`,
     `Total: ${formatMXN(quote.total)}`,
     `Envío: ${quote.freeShipping ? "gratis" : "por cotizar"}`,
-    ...(destino.trim() ? [`Destino: ${destino.trim()}`] : []),
+    `Código postal de envío: ${codigoPostal}`,
   ].join("\n")
 }
 
-// Próxima meta del pedido (mínimo → mayoreo → envío gratis), para la barra de progreso
+// Próxima meta del pedido (mínimo → cada escalón de mayoreo → envío gratis), para la barra de progreso
 export function siguienteMeta(totalPieces: number) {
-  const { minOrder, wholesaleFrom, freeShippingFrom, wholesaleDiscount } = business
+  const { minOrder, wholesaleTiers, freeShippingFrom } = business
 
   if (totalPieces < minOrder) {
     return { goal: minOrder, text: `Pedido mínimo: ${totalPieces} de ${minOrder} piezas` }
   }
-  if (totalPieces < wholesaleFrom) {
-    return {
-      goal: wholesaleFrom,
-      text: `Faltan ${wholesaleFrom - totalPieces} piezas para mayoreo (${formatMXN(wholesaleDiscount)} menos por pieza)`,
-    }
+
+  const metas = [...new Set([...wholesaleTiers.map((t) => t.from), freeShippingFrom])].sort((a, b) => a - b)
+  const goal = metas.find((m) => m > totalPieces)
+  if (goal === undefined) {
+    return { goal: freeShippingFrom, text: "¡Tienes el mejor precio de mayoreo y envío gratis!" }
   }
-  if (totalPieces < freeShippingFrom) {
-    return { goal: freeShippingFrom, text: `Faltan ${freeShippingFrom - totalPieces} piezas para envío gratis` }
+
+  // Qué se desbloquea al llegar a esa meta
+  const beneficios: string[] = []
+  const tierIndex = wholesaleTiers.findIndex((t) => t.from === goal)
+  if (tierIndex >= 0) {
+    const descuento = `${formatMXN(wholesaleTiers[tierIndex].discount)} menos por pieza`
+    beneficios.push(tierIndex === 0 ? `precio de mayoreo (${descuento})` : descuento)
   }
-  return { goal: freeShippingFrom, text: "¡Tienes precio de mayoreo y envío gratis!" }
+  if (goal === freeShippingFrom) beneficios.push("envío gratis")
+
+  return { goal, text: `Faltan ${goal - totalPieces} piezas para ${beneficios.join(" y ")}` }
 }

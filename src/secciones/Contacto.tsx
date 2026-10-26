@@ -34,7 +34,7 @@ function Contacto() {
 
       <div className="mx-auto max-w-5xl px-6 pt-10">
         <Reveal>
-          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Contáctanos</h3>
+          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Puedes encontrarnos en:</h3>
         </Reveal>
 
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
