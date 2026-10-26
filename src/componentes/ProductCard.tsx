@@ -10,10 +10,8 @@ type ProductCardProps = {
 }
 
 function ProductCard({ product, interactive }: ProductCardProps) {
-  // Ej.: "$25 desde 100 · $20 desde 500" (solo en las referencias con mayoreo)
-  const mayoreo = business.wholesaleTiers
-    .map((tier) => `$${product.price - tier.discount} a partir de ${tier.from} unidades`)
-    .join(" · ")
+  // Ej.: "5% desde 100 · 10% desde 500" (solo en las referencias con mayoreo)
+  const mayoreo = business.wholesaleTiers.map((tier) => `${tier.percent}% Despues de ${tier.from} piezas`).join(" / ")
 
   return (
     <article className="flex h-full flex-col rounded-2xl border border-line bg-surface p-3 shadow-xl shadow-black/40">
@@ -42,8 +40,11 @@ function ProductCard({ product, interactive }: ProductCardProps) {
       </ul>
 
       <div className="mt-auto pt-2">
+        <p>
+          Descuento de:
+        </p>
         <p className="text-xs text-muted">
-          {product.wholesale ? `Mayoreo: ${mayoreo}` : "Sin precio de mayoreo"}
+          {product.wholesale ? `${mayoreo}` : "Sin precio de mayoreo"}
         </p>
 
         <Link

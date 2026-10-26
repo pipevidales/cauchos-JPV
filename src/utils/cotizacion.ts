@@ -10,34 +10,39 @@ export function formatMXN(value: number) {
   return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(value)
 }
 
-// Descuento por pieza según el total de piezas del pedido (suma de todas las referencias)
-export function descuentoPorPieza(totalPieces: number) {
-  let discount = 0
+// Porcentaje de descuento según el total de piezas del pedido (suma de todas las referencias)
+export function descuentoPorcentaje(totalPieces: number) {
+  let percent = 0
   for (const tier of business.wholesaleTiers) {
-    if (totalPieces >= tier.from) discount = tier.discount
+    if (totalPieces >= tier.from) percent = tier.percent
   }
-  return discount
+  return percent
+}
+
+// Precio de una pieza con un porcentaje de descuento. Ej.: $30 con 5% → $28.50
+export function precioConDescuento(price: number, percent: number) {
+  return round2(price * (1 - percent / 100))
 }
 
 // Precio por pieza de una referencia: el descuento solo aplica en las que tienen mayoreo
-export function precioUnitario(product: Product, discount: number) {
-  return product.wholesale ? product.price - discount : product.price
+export function precioUnitario(product: Product, percent: number) {
+  return product.wholesale ? precioConDescuento(product.price, percent) : product.price
 }
 
 // Toda la lógica de precios vive aquí, separada de la pantalla
 export function calcularCotizacion(quantities: Quantities) {
   const totalPieces = products.reduce((sum, p) => sum + (quantities[p.ref] || 0), 0)
-  const discount = descuentoPorPieza(totalPieces)
+  const discountPercent = descuentoPorcentaje(totalPieces)
 
   const lines = products
     .filter((p) => (quantities[p.ref] || 0) > 0)
     .map((product) => {
       const qty = quantities[product.ref]
-      const unitPrice = precioUnitario(product, discount)
-      return { product, qty, unitPrice, amount: unitPrice * qty }
+      const unitPrice = precioUnitario(product, discountPercent)
+      return { product, qty, unitPrice, amount: round2(unitPrice * qty) }
     })
 
-  const base = lines.reduce((sum, l) => sum + l.amount, 0)
+  const base = round2(lines.reduce((sum, l) => sum + l.amount, 0))
   const rate = business.ivaRate
   const subtotal = business.pricesIncludeIva ? round2(base / (1 + rate)) : base
   const total = business.pricesIncludeIva ? base : round2(base * (1 + rate))
@@ -46,8 +51,8 @@ export function calcularCotizacion(quantities: Quantities) {
   return {
     lines,
     totalPieces,
-    discount,
-    wholesaleApplied: discount > 0 && lines.some((l) => l.product.wholesale),
+    discountPercent,
+    wholesaleApplied: discountPercent > 0 && lines.some((l) => l.product.wholesale),
     subtotal,
     iva,
     total,
@@ -71,7 +76,7 @@ export function construirMensaje(quote: Quote, codigoPostal = "") {
     "",
     ...detalle,
     "",
-    `Piezas: ${quote.totalPieces}${quote.wholesaleApplied ? " (precio de mayoreo aplicado)" : ""}`,
+    `Piezas: ${quote.totalPieces}${quote.wholesaleApplied ? ` (descuento de mayoreo: ${quote.discountPercent}%)` : ""}`,
     `Subtotal: ${formatMXN(quote.subtotal)}`,
     `IVA (${Math.round(business.ivaRate * 100)}%): ${formatMXN(quote.iva)}`,
     `Total: ${formatMXN(quote.total)}`,
@@ -98,7 +103,7 @@ export function siguienteMeta(totalPieces: number) {
   const beneficios: string[] = []
   const tierIndex = wholesaleTiers.findIndex((t) => t.from === goal)
   if (tierIndex >= 0) {
-    const descuento = `${formatMXN(wholesaleTiers[tierIndex].discount)} menos por pieza`
+    const descuento = `${wholesaleTiers[tierIndex].percent}% de descuento`
     beneficios.push(tierIndex === 0 ? `precio de mayoreo (${descuento})` : descuento)
   }
   if (goal === freeShippingFrom) beneficios.push("envío gratis")

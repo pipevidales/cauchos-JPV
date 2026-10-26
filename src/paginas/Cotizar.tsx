@@ -103,10 +103,6 @@ function Cotizar() {
       ? `Elige las piezas que necesitas. Pedido mínimo: ${business.minOrder} piezas.`
       : meta.text
 
-  const mayoreoTexto = business.wholesaleTiers
-    .map((t) => `${formatMXN(t.discount)} por pieza desde ${t.from} piezas`)
-    .join(" y ")
-
   return (
     <main>
       {/* Barra roja a todo el ancho, igual que en el resto de la página */}
@@ -116,10 +112,24 @@ function Cotizar() {
         <Reveal>
           <h3 className="heading-display text-3xl leading-none md:text-5xl">Arma tu pedido</h3>
         </Reveal>
-        <p className="mt-4 max-w-2xl text-lg text-muted">
-          Elige las referencias y cantidades. Las referencias con mayoreo bajan {mayoreoTexto} (cuentan las piezas de
-          todo el pedido) y el envío es gratis desde {business.freeShippingFrom} piezas. Al final envías la cotización
-          por WhatsApp para cerrar tu compra.
+
+        <p className="className= mt-4 max-w-2xl text-xl text-muted">
+          Elige las referencias y cantidades
+        </p>
+        <p>
+          ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        </p>
+        <p className=" text-lg ">
+          • Por compras entre 100 y 499 cauchos, obtienes un descuento del 5% por cada pieza.   ➜ (Aplica solo para referencias seleccionadas)
+        </p>
+        <p className="text-lg">
+          • Despues de 500 cauchos en adelante, obtienes un descuento del 10%  por piezas.   ➜    (Aplica solo para referencias seleccionadas)
+        </p>
+        <p className=" text-lg">
+          • El envío es gratis de 500 piezas en adelante
+        </p>
+        <p className="className= mt-4 text-xl text-muted">
+          Cuando tengas todo listo e ingreses tu código postal envías la cotización por WhatsApp para cerrar tu compra
         </p>
 
         {/* Código postal (obligatorio) y limpiar pedido */}
@@ -162,8 +172,8 @@ function Cotizar() {
           <ul className="space-y-3">
             {products.map((p) => {
               const qty = quantities[p.ref] || 0
-              const unit = precioUnitario(p, quote.discount)
-              const conDescuento = p.wholesale && quote.discount > 0
+              const unit = precioUnitario(p, quote.discountPercent)
+              const conDescuento = p.wholesale && quote.discountPercent > 0
               return (
                 <li
                   key={p.ref}

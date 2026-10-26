@@ -5,7 +5,7 @@ import Reveal from "../componentes/Reveal"
 function Hero() {
   return (
     // Pantalla completa, con el contenido alineado a la izquierda sobre una imagen de fondo
-    <section className="relative isolate flex min-h-svh items-center overflow-hidden px-6 pb-16 pt-32">
+    <section id="inicio" className="relative isolate flex min-h-svh items-center overflow-hidden px-6 pb-16 pt-32">
       {/* Imagen de fondo y degradados: oscurecen la izquierda para que el texto se lea bien */}
       <img
         src={banner}

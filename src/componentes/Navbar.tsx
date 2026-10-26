@@ -1,23 +1,34 @@
 import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
-import logo from "../imagenes/logo.jpg"
+import logo from "../imagenes/logo.png"
 import { business, whatsappLink } from "../data/business"
 
-// "hash" es la sección dentro de la página de inicio (vacío = parte superior)
-const links = [
-  { label: "Inicio", path: "/", hash: "" },
-  { label: "Nosotros", path: "/", hash: "#nosotros" },
-  { label: "Como comprar - Mayoreo", path: "/", hash: "#como-comprar" },
+type NavItem = {
+  label: string
+  path: string
+  hash: string // sección dentro de la página de inicio (vacío = parte superior)
+  sections?: string[] // ids de las secciones del inicio que encienden este enlace al pasar por ellas
+}
+
+const links: NavItem[] = [
+  { label: "Inicio", path: "/", hash: "", sections: ["inicio"] },
+  { label: "Nosotros", path: "/", hash: "#nosotros", sections: ["nosotros"] },
+  { label: "Cómo comprar - Mayoreo", path: "/", hash: "#como-comprar", sections: ["como-comprar", "mayoreo"] },
   { label: "Productos", path: "/productos", hash: "" },
   { label: "Cotizar", path: "/cotizar", hash: "" },
+  // Un solo enlace que se enciende en las dos secciones
   
-  { label: "Contacto", path: "/", hash: "#contacto" },
+  { label: "Contacto", path: "/", hash: "#contacto", sections: ["contacto"] },
 ]
+
+// Secciones del inicio, de arriba hacia abajo (deben coincidir con el id de cada <section>)
+const sectionIds = ["inicio", "nosotros", "como-comprar", "mayoreo", "contacto"]
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(() => window.scrollY > 24)
-  const { pathname, hash } = useLocation()
+  const [activeSection, setActiveSection] = useState("inicio")
+  const { pathname } = useLocation()
 
   // Detecta si la página ya bajó un poco para compactar el navbar
   useEffect(() => {
@@ -26,9 +37,48 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  // En el inicio: averigua por qué sección vas pasando para encender su enlace
+  useEffect(() => {
+    if (pathname !== "/") return
+
+    const update = () => {
+      const line = window.innerHeight * 0.4 // la sección "activa" es la última cuyo borde superior ya subió de este punto
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
+
+      let current = sectionIds[0]
+      if (atBottom) {
+        current = sectionIds[sectionIds.length - 1] // al final de la página, la última
+      } else {
+        for (const id of sectionIds) {
+          const el = document.getElementById(id)
+          if (el && el.getBoundingClientRect().top <= line) current = id
+        }
+      }
+      setActiveSection(current)
+    }
+
+    let frame = 0
+    const onScroll = () => {
+      cancelAnimationFrame(frame) // una sola actualización por cuadro: no pesa al hacer scroll
+      frame = requestAnimationFrame(update)
+    }
+
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [pathname])
+
   const closeMenu = () => setIsMenuOpen(false)
-  const isActive = (path: string, anchor: string) => pathname === path && hash === anchor
   const solid = scrolled || isMenuOpen
+
+  // En el inicio, el enlace se enciende si la sección que vas viendo está en su lista "sections"
+  const isActive = (item: NavItem) =>
+    item.sections ? pathname === "/" && item.sections.includes(activeSection) : pathname === item.path
 
   const desktopLink = (active: boolean) =>
     `relative font-medium transition-all duration-300
@@ -59,9 +109,14 @@ function Navbar() {
 
         {/* Links de escritorio */}
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
-          {links.map(({ label, path, hash: anchor }) => (
-            <Link key={label} to={{ pathname: path, hash: anchor }} className={desktopLink(isActive(path, anchor))}>
-              {label}
+          {links.map((item) => (
+            <Link
+              key={item.label}
+              to={{ pathname: item.path, hash: item.hash }}
+              aria-current={isActive(item) ? "page" : undefined}
+              className={desktopLink(isActive(item))}
+            >
+              {item.label}
             </Link>
           ))}
         </nav>
@@ -96,16 +151,19 @@ function Navbar() {
       {isMenuOpen && (
         <nav id="mobile-menu" aria-label="Móvil" className="border-t border-line bg-bg/95 px-6 py-3 lg:hidden">
           <div className="flex flex-col">
-            {links.map(({ label, path, hash: anchor }) => (
+            {links.map((item) => (
               <Link
-                key={label}
-                to={{ pathname: path, hash: anchor }}
+                key={item.label}
+                to={{ pathname: item.path, hash: item.hash }}
                 onClick={closeMenu}
+                aria-current={isActive(item) ? "page" : undefined}
                 className={`rounded-lg py-3 text-center transition-colors duration-200 hover:bg-surface hover:text-white ${
-                  isActive(path, anchor) ? "font-semibold text-white" : "text-muted"
+                  isActive(item)
+                    ? "font-semibold text-white underline decoration-brand decoration-2 underline-offset-8"
+                    : "text-muted"
                 }`}
               >
-                {label}
+                {item.label}
               </Link>
             ))}
           </div>

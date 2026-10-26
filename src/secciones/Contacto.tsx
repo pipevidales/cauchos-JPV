@@ -1,22 +1,8 @@
-import type { ReactNode } from "react"
 import Reveal from "../componentes/Reveal"
 import SectionBand from "../componentes/SectionBand"
+import SocialIcon from "../componentes/SocialIcon"
 import TreadBackground from "../componentes/TreadBackground"
 import { business, whatsappLink } from "../data/business"
-
-// Ícono de cada red, buscado por nombre
-const icons: Record<string, ReactNode> = {
-  Instagram: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" />
-    </>
-  ),
-  Facebook: <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v8h4v-8h3l1-4h-4V8z" />,
-  TikTok: <path d="M16 3v10.5a4.5 4.5 0 1 1-4-4.5M16 3a5 5 0 0 0 4 4" />,
-  WhatsApp: <path d="M21 12a8 8 0 0 1-11.9 7L3 21l2-5.9A8 8 0 1 1 21 12z" />,
-}
 
 function Contacto() {
   // WhatsApp primero (es el canal principal de venta), luego las redes
@@ -34,7 +20,7 @@ function Contacto() {
 
       <div className="mx-auto max-w-5xl px-6 pt-10">
         <Reveal>
-          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Puedes encontrarnos en:</h3>
+          <h3 className="heading-display text-center text-3xl leading-none md:text-5xl">Contáctanos</h3>
         </Reveal>
 
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -47,11 +33,7 @@ function Contacto() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 transition duration-200 hover:-translate-y-1 hover:border-brand/60"
               >
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand text-white">
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    {icons[name]}
-                  </svg>
-                </span>
+                <SocialIcon name={name} className="h-14 w-14" />
                 <span>
                   <span className="block text-sm text-muted">{name}</span>
                   <span className="block text-lg font-semibold">{handle}</span>
