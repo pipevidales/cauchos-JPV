@@ -22,7 +22,7 @@ export const business = {
 
   socials: [
     { name: "Instagram", handle: "@cauchosjpv", url: "https://instagram.com/cauchosjpv" },
-    { name: "Facebook", handle: "@cauchosjpv", url: "https://facebook.com/cauchosjpv" },
+    { name: "Facebook", handle: "@cauchosjpv", url: "https://facebook.com/share/1GwgTC2XsD/" },
     { name: "TikTok", handle: "@cauchos.jpv", url: "https://www.tiktok.com/@cauchos.jpv" },
   ],
 }
