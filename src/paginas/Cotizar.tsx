@@ -125,6 +125,14 @@ function Cotizar() {
   const setQty = (ref: string, value: number) =>
     setQuantities((prev) => ({ ...prev, [ref]: Math.min(99999, Math.max(0, Math.floor(value) || 0)) }))
 
+  // Desplazamientos suaves: al resumen completo y al campo del código postal
+  const irAlResumen = () => document.getElementById("resumen")?.scrollIntoView({ behavior: "smooth", block: "start" })
+  const irAlPostal = () => {
+  const campo = document.getElementById("codigo-postal")
+  campo?.scrollIntoView({ behavior: "smooth", block: "center" })
+  campo?.focus({ preventScroll: true })
+}
+
   const estado =
     quote.totalPieces === 0
       ? `Elige las piezas que necesitas. Pedido mínimo: ${business.minOrder} piezas.`
@@ -177,6 +185,7 @@ function Cotizar() {
               type="text"
               inputMode="numeric"
               autoComplete="postal-code"
+              id="codigo-postal"
               required
               maxLength={5}
               value={postal}
@@ -202,9 +211,9 @@ function Cotizar() {
           </button>
         </div>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_22rem]">
+        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
           {/* Lista de referencias */}
-          <ul className="space-y-3">
+          <ul className="min-w-0 space-y-3">
             {products.map((p) => {
               const qty = quantities[p.ref] || 0
               const unit = precioUnitario(p, quote.discountPercent)
@@ -287,7 +296,7 @@ function Cotizar() {
           </ul>
 
           {/* Resumen */}
-          <aside className="h-fit rounded-2xl border border-brand/40 bg-surface p-6 lg:sticky lg:top-24">
+          <aside id="resumen" className="h-fit min-w-0 rounded-2xl border border-brand/40 bg-surface p-6 lg:sticky lg:top-24">
             <h2 className="heading-display text-2xl">Tu cotización</h2>
 
             {/* Barra de progreso hacia el siguiente beneficio */}
@@ -362,13 +371,25 @@ function Cotizar() {
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div>
             {faltaPostal ? (
-              <p className="text-xs text-red-400">Falta tu código postal</p>
+              <p className="mt-2 text-center text-xs text-red-400">
+                Escribe tu código postal para poder enviar la cotización.{" "}
+                <button type="button" onClick={irAlPostal} className="cursor-pointer font-semibold underline">
+                  Ir al campo
+                </button>
+              </p>
             ) : (
               <p className="text-xs text-muted">{quote.totalPieces} piezas · total con IVA</p>
             )}
             <p className="heading-display text-2xl leading-none">{formatMXN(quote.total)}</p>
           </div>
-          <SendButton compact enabled={canSend} href={whatsapp} label="Enviar por WhatsApp" />
+          <button
+            type="button"
+            onClick={irAlResumen}
+            disabled={quote.totalPieces === 0}
+            className="shrink-0 cursor-pointer rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-red-900/30 transition duration-200 hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted disabled:shadow-none"
+          >
+            Ver resumen
+          </button>
         </div>
       </div>
     </main>

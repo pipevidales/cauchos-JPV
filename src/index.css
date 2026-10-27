@@ -23,9 +23,6 @@ html {
 
   
 @layer base {
-    body {
-    overflow-x: clip;
-  }
   body {
     @apply bg-bg font-sans text-zinc-100 antialiased;
   }
