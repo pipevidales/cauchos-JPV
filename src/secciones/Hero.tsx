@@ -32,7 +32,7 @@ function Hero() {
 
         <Reveal delay={200}>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-zinc-200">
-            Repuestos y accesorios que convierten la fuerza de la llanta de tractor en resistencia que se nota.
+            Repuestos que convierten la fuerza de la llanta de tractor en resistencia que se nota.
           </p>
         </Reveal>
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { useSearchParams } from "react-router"
 import GomaImage from "../componentes/GomaImage"
 import Reveal from "../componentes/Reveal"
@@ -13,6 +13,33 @@ import {
   siguienteMeta,
   type Quantities,
 } from "../utils/cotizacion"
+
+type Beneficio = { big: ReactNode; title: string; detail: string }
+
+// Tarjetas de beneficios: se generan con las reglas de business.ts (descuentos y envío gratis)
+const beneficios: Beneficio[] = [
+  ...business.wholesaleTiers.map((tier, i, tiers) => {
+    const siguiente = tiers[i + 1]
+    const rango = siguiente ? `De ${tier.from} a ${siguiente.from - 1} piezas` : `Desde ${tier.from} piezas`
+    return {
+      big: `${tier.percent}%`,
+      title: "de descuento por pieza",
+      detail: `${rango}`,
+    }
+  }),
+  {
+    big: (
+      <svg viewBox="0 0 24 24" className="h-7 w-7 sm:h-9 sm:w-9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="1" y="3" width="15" height="13" />
+        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
+      </svg>
+    ),
+    title: "Envío gratis",
+    detail: `Desde ${business.freeShippingFrom} piezas`,
+  },
+]
 
 const STORAGE_KEY = "cauchos-jpv-pedido"
 
@@ -103,6 +130,7 @@ function Cotizar() {
       ? `Elige las piezas que necesitas. Pedido mínimo: ${business.minOrder} piezas.`
       : meta.text
 
+
   return (
     <main>
       {/* Barra roja a todo el ancho, igual que en el resto de la página */}
@@ -112,24 +140,31 @@ function Cotizar() {
         <Reveal>
           <h3 className="heading-display text-3xl leading-none md:text-5xl">Arma tu pedido</h3>
         </Reveal>
+        <p className="mt-4 max-w-2xl text-lg text-muted">Elige las referencias y cantidades.</p>
 
-        <p className="className= mt-4 max-w-2xl text-xl text-muted">
-          Elige las referencias y cantidades
-        </p>
-        <p>
-          ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        </p>
-        <p className=" text-lg ">
-          • Por compras entre 100 y 499 cauchos, obtienes un descuento del 5% por cada pieza.   ➜ (Aplica solo para referencias seleccionadas)
-        </p>
-        <p className="text-lg">
-          • Despues de 500 cauchos en adelante, obtienes un descuento del 10%  por piezas.   ➜    (Aplica solo para referencias seleccionadas)
-        </p>
-        <p className=" text-lg">
-          • El envío es gratis de 500 piezas en adelante
-        </p>
-        <p className="className= mt-4 text-xl text-muted">
-          Cuando tengas todo listo e ingreses tu código postal envías la cotización por WhatsApp para cerrar tu compra
+        {/* Beneficios por cantidad: en celular van una debajo de otra, en pantallas anchas en tres columnas */}
+        <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+          {beneficios.map(({ big, title, detail }) => (
+            <li
+              key={title + detail}
+              className="flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5 sm:flex-col sm:items-start sm:gap-1.5 sm:p-4"
+            >
+              <span className="heading-display grid w-14 shrink-0 place-items-center text-2xl leading-none text-brand sm:w-auto sm:place-items-start sm:text-4xl">
+                {big}
+              </span>
+              <div>
+                <p className="text-sm font-semibold leading-tight">{title}</p>
+                <p className="text-xs text-muted">{detail}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+          <p className="mt-2 text-xs text-muted">* El descuento aplica solo en las referencias con mayoreo.</p>
+
+      
+
+        <p className="mt-4 border-t border-line pt-4 text-muted">
+          Cuando tengas todo listo e ingreses tu código postal, envías la cotización por WhatsApp para cerrar tu compra.
         </p>
 
         {/* Código postal (obligatorio) y limpiar pedido */}
@@ -287,6 +322,12 @@ function Cotizar() {
                 <dt className="text-base">Total</dt>
                 <dd className="heading-display text-3xl">{formatMXN(quote.total)}</dd>
               </div>
+                                {quote.savings > 0 && (
+                    <div className="flex justify-between text-green-400">
+                      <dt>Ahorras con el descuento</dt>
+                      <dd className="font-semibold">{formatMXN(quote.savings)}</dd>
+                    </div>
+                  )}
               <div className="flex justify-between pt-1">
                 <dt className="text-muted">Envío</dt>
                 <dd className={`font-semibold ${quote.freeShipping ? "text-green-400" : ""}`}>

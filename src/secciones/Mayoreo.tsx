@@ -11,10 +11,10 @@ function Mayoreo() {
     `Pedido mínimo: ${minOrder} piezas`,
     ...wholesaleTiers.map((tier, i) => {
       const siguiente = wholesaleTiers[i + 1]
-      const rango = siguiente ? `De ${tier.from} a ${siguiente.from - 1} piezas` : `Desde ${tier.from} piezas`
+      const rango = siguiente ? `De ${tier.from} a ${siguiente.from - 1} piezas` : `Desde ${tier.from} piezas en adelante`
       return `${rango}: ${tier.percent}% de descuento`
     }),
-    `Envío gratis desde ${freeShippingFrom} piezas`,
+    `Envío gratis desde ${freeShippingFrom} piezas en adelante`,
   ]
 
   return (

@@ -3,8 +3,8 @@
 // Descuento en PORCENTAJE según el TOTAL de piezas del pedido (suma de todas las referencias).
 // Solo se aplica en las referencias que tienen mayoreo (ver "wholesale" en products.ts).
 const wholesaleTiers = [
-  { from: 100, percent: 5 }, // de 100 a 499 piezas: 5% menos por pieza
-  { from: 500, percent: 10 }, // desde 500 piezas: 10% menos por pieza
+  { from: 100, percent: 10 }, // de 100 a 499 piezas: 5% menos por pieza
+  { from: 500, percent: 20 }, // desde 500 piezas: 10% menos por pieza
 ]
 
 export const business = {

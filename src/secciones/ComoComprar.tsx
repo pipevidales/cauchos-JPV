@@ -9,7 +9,7 @@ function ComoComprar() {
     {
       n: "1",
       title: "Elige tus referencias",
-      text: "Busca el modelo de tu moto en el catálogo y encuentra la goma que le queda.",
+      text: "Busca el modelo de tu moto en el catálogo y encuentra la referencia que le sirve.",
       cta: "Ver catálogo",
       to: "/productos",
     },
@@ -23,7 +23,7 @@ function ComoComprar() {
     {
       n: "3",
       title: "Confirma por WhatsApp",
-      text: "Te llega la cotización lista por mensaje para cuadrar el pago y el envío con nosotros.",
+      text: "Te llega la cotización lista por mensaje para acordar el envío con nosotros.",
     },
   ]
 

@@ -47,7 +47,10 @@ export function calcularCotizacion(quantities: Quantities) {
   const subtotal = business.pricesIncludeIva ? round2(base / (1 + rate)) : base
   const total = business.pricesIncludeIva ? base : round2(base * (1 + rate))
   const iva = round2(total - subtotal)
-
+    // Cuánto se ahorra el cliente con el descuento (ya con IVA, igual que el total)
+  const baseSinDescuento = lines.reduce((sum, l) => sum + l.product.price * l.qty, 0)
+  const totalSinDescuento = business.pricesIncludeIva ? baseSinDescuento : round2(baseSinDescuento * (1 + rate))
+  const savings = round2(totalSinDescuento - total)
   return {
     lines,
     totalPieces,
@@ -56,6 +59,7 @@ export function calcularCotizacion(quantities: Quantities) {
     subtotal,
     iva,
     total,
+    savings,
     freeShipping: totalPieces >= business.freeShippingFrom,
     canSend: totalPieces >= business.minOrder,
     missingForMin: Math.max(0, business.minOrder - totalPieces),
