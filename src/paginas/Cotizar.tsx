@@ -23,7 +23,7 @@ const beneficios: Beneficio[] = [
     const rango = siguiente ? `De ${tier.from} a ${siguiente.from - 1} piezas` : `Desde ${tier.from} piezas`
     return {
       big: `${tier.percent}%`,
-      title: "de descuento por pieza",
+      title: "De descuento por pieza",
       detail: `${rango}`,
     }
   }),
@@ -167,7 +167,7 @@ function Cotizar() {
             </li>
           ))}
         </ul>
-          <p className="mt-2 text-xs text-muted">* El descuento aplica solo en las referencias con mayoreo.</p>
+        
 
       
 

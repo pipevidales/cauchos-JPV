@@ -62,7 +62,7 @@ function Productos() {
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
           <p className="text-sm text-muted">
-            Pedido mínimo de {business.minOrder} piezas · mayoreo en referencias seleccionadas desde {business.wholesaleFrom}
+            Pedido mínimo de {business.minOrder} piezas · mayoreo desde {business.wholesaleFrom} piezas en adelante
           </p>
           <Link
             to="/cotizar"

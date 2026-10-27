@@ -28,7 +28,7 @@ function Mayoreo() {
         >
           <h2 className="heading-display text-4xl leading-none md:text-6xl">Envíos a toda la República Mexicana</h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
-            Precios de mayoreo en referencias seleccionadas, a partir de{" "}
+            Precios de mayoreo a partir de{" "}
             <b className="text-white">{wholesaleFrom} piezas</b>.
           </p>
 

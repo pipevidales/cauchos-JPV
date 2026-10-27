@@ -9,7 +9,7 @@ function ComoComprar() {
     {
       n: "1",
       title: "Elige tus referencias",
-      text: "Busca el modelo de tu moto en el catálogo y encuentra la referencia que le sirve.",
+      text: "Busca en el catalogo el modelo de tu moto y encuentra la referencia que se ajusta a tu necesidad.",
       cta: "Ver catálogo",
       to: "/productos",
     },
