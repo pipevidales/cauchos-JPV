@@ -28,7 +28,7 @@ export const products: Product[] = [
     wholesale: true,
     image: ref03,
   },
-  { ref: "04", models: ["Pulsar NS 200"], price: 30, wholesale: true, image: ref04 },
+  { ref: "04", models: ["Pulsar NS 200"], price: 40, wholesale: true, image: ref04 },
   {
     ref: "05",
     models: ["Vento", "GS 125 - GN 125 - EN125", "Crossmax 200"],
