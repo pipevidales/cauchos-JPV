@@ -8,6 +8,7 @@ import ref07 from "../imagenes/productos/ref-07.webp"
 import ref08 from "../imagenes/productos/ref-08.webp"
 import ref09 from "../imagenes/productos/ref-09.webp"
 import ref10 from "../imagenes/productos/ref-10.webp"
+import ref11 from "../imagenes/productos/ref-11.png"
 
 // Forma que debe tener cada producto del catálogo
 export type Product = {
@@ -65,4 +66,11 @@ export const products: Product[] = [
     wholesale: true,
     image: ref10,
   },
+  {
+    ref: "11",
+    models: ["Gixxer 250"],
+    price: 40,
+    wholesale: true,
+    image: ref11,
+  }
 ]
